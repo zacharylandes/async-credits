@@ -38,7 +38,7 @@ def test_fail_credit() -> None:
     assert user is not None
     assert user["pending_count"] == 0
     assert "balance" not in user
-    assert user["status"] == "processing"
+    assert user["status"] == "processed"
 
 
 def test_fail_credit_idempotent() -> None:

@@ -93,9 +93,8 @@ def fail_credit(task_id: str, error: str) -> bool:
 
 
 def settle_status(user_id: str, session: ClientSession | None = None) -> None:
-    # Balance must exist so an all-failed user (never credited) stays processing.
     users_collection.update_one(
-        {"user_id": user_id, "pending_count": 0, "balance": {"$exists": True}},
+        {"user_id": user_id, "pending_count": 0},
         {"$set": {"status": "processed"}},
         session=session,
     )
