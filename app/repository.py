@@ -1,4 +1,4 @@
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from decimal import Decimal
 from typing import Any
 
@@ -16,7 +16,7 @@ def register_credit(task_id: str, user_id: str, amount: Decimal) -> None:
                 "user_id": user_id,
                 "amount": Decimal128(str(amount)),
                 "status": "pending",
-                "created_at": datetime.now(timezone.utc),
+                "created_at": datetime.now(UTC),
                 "processed_at": None,
                 "error": None,
             },
@@ -45,7 +45,7 @@ def apply_credit(task_id: str) -> bool:
             {
                 "$set": {
                     "status": "processed",
-                    "processed_at": datetime.now(timezone.utc),
+                    "processed_at": datetime.now(UTC),
                 }
             },
             session=session,
@@ -72,7 +72,7 @@ def fail_credit(task_id: str, error: str) -> bool:
             {
                 "$set": {
                     "status": "failed",
-                    "processed_at": datetime.now(timezone.utc),
+                    "processed_at": datetime.now(UTC),
                     "error": error,
                 }
             },

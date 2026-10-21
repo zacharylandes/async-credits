@@ -1,7 +1,7 @@
 import logging
 import uuid
+from collections.abc import AsyncIterator
 from contextlib import asynccontextmanager
-from typing import AsyncIterator
 
 from fastapi import FastAPI, HTTPException, status
 from kombu.exceptions import OperationalError

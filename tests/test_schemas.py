@@ -29,7 +29,7 @@ def test_credit_request_rejects_long_user_id() -> None:
 
 def test_credit_request_rejects_non_positive_amount() -> None:
     with pytest.raises(ValidationError):
-        CreditRequest(user_id="alice", amount=Decimal("0"))
+        CreditRequest(user_id="alice", amount=Decimal(0))
     with pytest.raises(ValidationError):
         CreditRequest(user_id="alice", amount=Decimal("-1.00"))
 
