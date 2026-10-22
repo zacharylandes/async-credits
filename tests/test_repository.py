@@ -68,3 +68,20 @@ def test_concurrent_apply_same_credit_once() -> None:
     user = users_collection.find_one({"user_id": "alice"})
     assert user is not None
     assert user["balance"].to_decimal() == Decimal("7.00")
+
+
+def test_concurrent_apply_many_credits_sum() -> None:
+    amounts: list[Decimal] = [Decimal(f"{i}.00") for i in range(1, 21)]
+    task_ids: list[str] = [f"t{i}" for i in range(1, 21)]
+    for task_id, amount in zip(task_ids, amounts, strict=True):
+        register_credit(task_id, "alice", amount)
+    with ThreadPoolExecutor(max_workers=20) as pool:
+        futures = [pool.submit(apply_credit, task_id) for task_id in task_ids]
+        results = [future.result() for future in as_completed(futures)]
+    assert results.count(True) == 20
+    assert results.count(False) == 0
+    user = users_collection.find_one({"user_id": "alice"})
+    assert user is not None
+    assert user["balance"].to_decimal() == sum(amounts, Decimal("0.00"))
+    assert user["pending_count"] == 0
+    assert user["status"] == "processed"
